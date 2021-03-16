@@ -11,7 +11,7 @@ import sample.FileNameRuleLexer;
 import sample.FileNameRuleParser;
 import sample.FileNameRuleParser.RContext;
 
-public class HelloRunner_1  {
+public class FileNames  {
 	public static int errorCount=0;
 	public static void runParser(String fileName) throws IOException {
 		
@@ -26,7 +26,7 @@ public class HelloRunner_1  {
 			FileNameRuleParser parser = new FileNameRuleParser(tokens);
 			RContext tree = parser.r(); // begin parsing at rule 'r'
 			//System.out.println(tree.exception);
-			if(tree.exception!=null)
+			if(parser.getNumberOfSyntaxErrors() > 0)
 				errorCount+=1;
 			//System.out.println(tree.toStringTree(parser)); // print LISP-style tree
 			

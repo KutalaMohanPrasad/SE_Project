@@ -31,6 +31,8 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
@@ -137,6 +139,7 @@ public class MarkdownTest {
 	public void testInOut() throws Exception {
 		System.out.println("Test " + filename);
 		ANTLRInputStream input = new ANTLRInputStream(markdownInput);
+		//CharStream input = CharStreams.fromFileName(filename);
 		MarkdownLexer lexer = new MarkdownLexer(input);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		MarkdownParser parser = new MarkdownParser(tokens);
