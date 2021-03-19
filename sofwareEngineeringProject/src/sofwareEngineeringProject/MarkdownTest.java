@@ -18,8 +18,7 @@
  */
 package sofwareEngineeringProject;
 
-
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -31,8 +30,6 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
@@ -103,7 +100,9 @@ public class MarkdownTest {
 					continue;
 				*/
 				String path = files[f].getAbsolutePath();
-				String dir = path.substring(0, path.lastIndexOf("/"));
+				//System.out.println(path);
+				//System.out.println( path.lastIndexOf("\\"));
+				String dir = path.substring(0, path.lastIndexOf("\\"));
 				String ext = filename.substring(filename.lastIndexOf("."));
 				// Try .html .
 				String htmlFilename = dir + "/" + filename.substring(0, filename.length()-ext.length())
@@ -139,7 +138,6 @@ public class MarkdownTest {
 	public void testInOut() throws Exception {
 		System.out.println("Test " + filename);
 		ANTLRInputStream input = new ANTLRInputStream(markdownInput);
-		//CharStream input = CharStreams.fromFileName(filename);
 		MarkdownLexer lexer = new MarkdownLexer(input);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		MarkdownParser parser = new MarkdownParser(tokens);

@@ -1,4 +1,21 @@
-
+/**
+ * This file is part of the ANTMark project.
+ * 
+ * ANTMark is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * ANTMark is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with the ANTMark project.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Copyright 2014 Marco LOMBARDO, mar9000 near google.com .
+ */
 package sofwareEngineeringProject;
 
 import java.util.HashMap;
@@ -11,6 +28,8 @@ import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.antlr.v4.runtime.tree.xpath.XPath;
+import org.mar9000.antmark.grammar.*;
+import org.mar9000.antmark.grammar.MarkdownParser.*;
 
 import sample.MarkdownLexer;
 import sample.MarkdownParser;
@@ -79,44 +98,44 @@ public class MarkdownTranslator extends MarkdownParserBaseListener {
 			case '&': sb.append("&amp;"); break;
 			case '"': sb.append("&quot;"); break;
 			case '\'': sb.append("&#39;"); break;
-//			case 'ÃƒÂ ': sb.append("&agrave;");break;
-//			case 'Ãƒâ‚¬': sb.append("&Agrave;");break;
-//			case 'ÃƒÂ¢': sb.append("&acirc;");break;
-//			case 'Ãƒâ€š': sb.append("&Acirc;");break;
-//			case 'ÃƒÂ¤': sb.append("&auml;");break;
-//			case 'Ãƒâ€ž': sb.append("&Auml;");break;
-//			case 'ÃƒÂ¥': sb.append("&aring;");break;
-//			case 'Ãƒâ€¦': sb.append("&Aring;");break;
-//			case 'ÃƒÂ¦': sb.append("&aelig;");break;
-//			case 'Ãƒâ€ ': sb.append("&AElig;");break;
-//			case 'ÃƒÂ§': sb.append("&ccedil;");break;
-//			case 'Ãƒâ€¡': sb.append("&Ccedil;");break;
-//			case 'ÃƒÂ©': sb.append("&eacute;");break;
-//			case 'Ãƒâ€°': sb.append("&Eacute;");break;
-//			case 'ÃƒÂ¨': sb.append("&egrave;");break;
-//			case 'ÃƒË†': sb.append("&Egrave;");break;
-//			case 'ÃƒÂª': sb.append("&ecirc;");break;
-//			case 'ÃƒÅ ': sb.append("&Ecirc;");break;
-//			case 'ÃƒÂ«': sb.append("&euml;");break;
-//			case 'Ãƒâ€¹': sb.append("&Euml;");break;
-//			case 'ÃƒÂ¯': sb.append("&iuml;");break;
-//			case 'Ãƒï¿½': sb.append("&Iuml;");break;
-//			case 'ÃƒÂ´': sb.append("&ocirc;");break;
-//			case 'Ãƒâ€�': sb.append("&Ocirc;");break;
-//			case 'ÃƒÂ¶': sb.append("&ouml;");break;
-//			case 'Ãƒâ€“': sb.append("&Ouml;");break;
-//			case 'ÃƒÂ¸': sb.append("&oslash;");break;
-//			case 'ÃƒËœ': sb.append("&Oslash;");break;
-//			case 'ÃƒÅ¸': sb.append("&szlig;");break;
-//			case 'ÃƒÂ¹': sb.append("&ugrave;");break;
-//			case 'Ãƒâ„¢': sb.append("&Ugrave;");break;         
-//			case 'ÃƒÂ»': sb.append("&ucirc;");break;         
-//			case 'Ãƒâ€º': sb.append("&Ucirc;");break;
-//			case 'ÃƒÂ¼': sb.append("&uuml;");break;
-//			case 'ÃƒÅ“': sb.append("&Uuml;");break;
-//			case 'Ã‚Â®': sb.append("&reg;");break;         
-//			case 'Ã‚Â©': sb.append("&copy;");break;   
-//			case 'Ã¢â€šÂ¬': sb.append("&euro;"); break;
+			case 'Ã ': sb.append("&agrave;");break;
+			case 'Ã€': sb.append("&Agrave;");break;
+			case 'Ã¢': sb.append("&acirc;");break;
+			case 'Ã‚': sb.append("&Acirc;");break;
+			case 'Ã¤': sb.append("&auml;");break;
+			case 'Ã„': sb.append("&Auml;");break;
+			case 'Ã¥': sb.append("&aring;");break;
+			case 'Ã…': sb.append("&Aring;");break;
+			case 'Ã¦': sb.append("&aelig;");break;
+			case 'Ã†': sb.append("&AElig;");break;
+			case 'Ã§': sb.append("&ccedil;");break;
+			case 'Ã‡': sb.append("&Ccedil;");break;
+			case 'Ã©': sb.append("&eacute;");break;
+			case 'Ã‰': sb.append("&Eacute;");break;
+			case 'Ã¨': sb.append("&egrave;");break;
+			case 'Ãˆ': sb.append("&Egrave;");break;
+			case 'Ãª': sb.append("&ecirc;");break;
+			case 'ÃŠ': sb.append("&Ecirc;");break;
+			case 'Ã«': sb.append("&euml;");break;
+			case 'Ã‹': sb.append("&Euml;");break;
+			case 'Ã¯': sb.append("&iuml;");break;
+			case 'Ã�': sb.append("&Iuml;");break;
+			case 'Ã´': sb.append("&ocirc;");break;
+			case 'Ã”': sb.append("&Ocirc;");break;
+			case 'Ã¶': sb.append("&ouml;");break;
+			case 'Ã–': sb.append("&Ouml;");break;
+			case 'Ã¸': sb.append("&oslash;");break;
+			case 'Ã˜': sb.append("&Oslash;");break;
+			case 'ÃŸ': sb.append("&szlig;");break;
+			case 'Ã¹': sb.append("&ugrave;");break;
+			case 'Ã™': sb.append("&Ugrave;");break;         
+			case 'Ã»': sb.append("&ucirc;");break;         
+			case 'Ã›': sb.append("&Ucirc;");break;
+			case 'Ã¼': sb.append("&uuml;");break;
+			case 'Ãœ': sb.append("&Uuml;");break;
+			case 'Â®': sb.append("&reg;");break;         
+			case 'Â©': sb.append("&copy;");break;   
+			case 'â‚¬': sb.append("&euro;"); break;
 			//
 			default:  sb.append(c); break;
 			}
