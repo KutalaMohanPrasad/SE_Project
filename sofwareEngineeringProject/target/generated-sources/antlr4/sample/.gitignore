@@ -12,3 +12,9 @@
 /MarkdownParser.tokens
 /MarkdownParserBaseListener.java
 /MarkdownParserListener.java
+/TextMarkdown.tokens
+/TextMarkdownBaseListener.java
+/TextMarkdownLexer.java
+/TextMarkdownLexer.tokens
+/TextMarkdownListener.java
+/TextMarkdownParser.java
