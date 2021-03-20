@@ -46,6 +46,7 @@ public class MarkdownTest {
 	
 	private static final String TESTS_DIR = "tests";
 	private static final String MD_EXT = ".md";
+	private static final String RMD_EXT = ".Rmd";
 	private static final String HTML_EXT = ".html";
 	
 	private String filename;
@@ -93,15 +94,14 @@ public class MarkdownTest {
 		for (int f = 0; f < files.length; f++) {
 			if (files[f].isDirectory() && !files[f].getName().endsWith(".disabled")) {
 				addTestsFrom(files[f], inoutPairs);
-			} else if (files[f].getName().endsWith(MD_EXT) || files[f].getName().endsWith(".text")) {
+			} else if (files[f].getName().endsWith(MD_EXT) || files[f].getName().endsWith(".text") 
+					|| files[f].getName().endsWith(RMD_EXT)) {
 				String filename = files[f].getName();
 				/* Used to test only a smaller subset of tests.
 				if (!filename.contains("blockq"))
 					continue;
 				*/
 				String path = files[f].getAbsolutePath();
-				//System.out.println(path);
-				//System.out.println( path.lastIndexOf("\\"));
 				String dir = path.substring(0, path.lastIndexOf("\\"));
 				String ext = filename.substring(filename.lastIndexOf("."));
 				// Try .html .
