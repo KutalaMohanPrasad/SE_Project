@@ -4,22 +4,36 @@ import static org.junit.Assert.*;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map.Entry;
+import java.util.Properties;
 
+import org.antlr.v4.runtime.ANTLRErrorListener;
 import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.RecognitionException;
+import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
+import org.junit.AfterClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+import junit.framework.TestResult;
 import sample.MarkdownLexer;
 import sample.MarkdownParser;
 
@@ -30,10 +44,13 @@ public class MarkdownTest {
 	private static final String MD_EXT = ".md";
 	private static final String RMD_EXT = ".Rmd";
 	private static final String HTML_EXT = ".html";
+	private static int errorCount = 0;
+	private static int syntaxErrorCount = 0;
 	
 	private String filename;
 	private String markdownInput;
 	private String htmlOutput;
+	private static HashMap<String,Integer> exceptionList =new HashMap<String,Integer>();
 	
 	private static String readFileAsString(String filePath) throws IOException {
 		StringBuffer fileData = new StringBuffer();
@@ -117,17 +134,28 @@ public class MarkdownTest {
 	}
 
 	@Test
-	public void testInOut() throws Exception {
+	public void testInOut()  {
+		try {
 		System.out.println("Test " + filename);
 		ANTLRInputStream input = new ANTLRInputStream(markdownInput);
 		MarkdownLexer lexer = new MarkdownLexer(input);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		MarkdownParser parser = new MarkdownParser(tokens);
+		SyntaxErrorListener listener = new SyntaxErrorListener();
+		
 		ParseTree tree = parser.document();
+		parser.addErrorListener(listener);
+		//System.out.println(listener.getSyntaxErrors());
+		//System.out.println("my own:"+parser.getErrorListenerDispatch().getClass().getName());
+		//System.out.println(errorCount);
+		errorCount+=parser.getErrorListeners().size();
 		if (parser.getNumberOfSyntaxErrors() > 0) {
+			syntaxErrorCount+=parser.getNumberOfSyntaxErrors();
 			throw new Exception("Syntax error in test " + filename);
 		}
 		//
+		//System.out.println(syntaxErrorCount);
+
 		ParseTreeWalker walker = new ParseTreeWalker();
 		MarkdownTranslator translator = new MarkdownTranslator(tree, parser);
 		walker.walk(translator, tree);
@@ -135,7 +163,52 @@ public class MarkdownTest {
 			translator.clearHtml();
 			walker.walk(translator, tree);
 		}
+		parser.addErrorListener(new BaseErrorListener() {
+	        @Override
+	        public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
+	            throw new IllegalStateException("failed to parse at line " + line + " due to " + msg, e);
+	            
+	        }
+	    });
 		assertEquals(htmlOutput, translator.getHtml());
+//		TestResult result=new TestResult();
+//		Test(result);
+		
 	}
+		catch(Exception e) {
+			exceptionList.put(e.getClass().getName(), 1);
+			System.out.println("Exception: "+e);
+		}
+	}
+	
+	public static void Test(TestResult result) {
+		 int e = result.errorCount();
+		 int f = result.failureCount();
+		System.out.println(e+"Syntax errors:"+syntaxErrorCount);
+	}
+	
+	@AfterClass
+	public static void printFailedTestsCount() {
+		try {
+			//Properties properties=new Properties();
+			
+//			for(Entry<String, Integer> entry: exceptionList.entrySet())
+//			{
+//				properties.put(entry.getKey(),entry.getValue());
+////			}
+//			properties.put("Syntax_errors:",syntaxErrorCount);
+//			properties.store(new FileOutputStream("tests/Output.properties"), null);
+			exceptionList.put("Syntax_errors:",syntaxErrorCount);
+			ObjectOutputStream oos = new ObjectOutputStream (new FileOutputStream("tests/Output.properties"));
+	        oos.writeObject(exceptionList);
+	        oos.close();
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+	    
+	}
+	
+		
 
 }
