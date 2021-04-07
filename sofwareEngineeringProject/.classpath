@@ -10,5 +10,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="E:/bhargavi/sofwareEngineeringProject/lib/antlr-4.2-complete.jar"/>
 	<classpathentry kind="lib" path="E:/bhargavi/sofwareEngineeringProject/lib/antlr-4.9.1-complete.jar"/>
+	<classpathentry kind="lib" path="E:/Java_Stuff/jfreechart-1.0.1/lib/jcommon-1.0.0.jar"/>
+	<classpathentry kind="lib" path="E:/Java_Stuff/jfreechart-1.0.1/lib/jfreechart-1.0.1.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
