@@ -10,6 +10,7 @@ import java.util.Properties;
 
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
+import org.jfree.ui.RefineryUtilities;
 
 import sample.*;
 import sample.FileNameRuleParser.RContext;
@@ -90,7 +91,9 @@ public class FileNames  {
 //	      //System.out.println("List of the text files in the specified directory:");
 		File directoryPath = new File("tests");
 		ArrayList<String> textFilesList=listOfFiles(directoryPath);
+		ArrayList<Integer> fileLengths= new ArrayList<Integer>();
 	      for(String fileName : textFilesList) {
+	    	  fileLengths.add(fileName.length());
 	    	  if(fileName.length()>=256)
 	    		  numberOfFilenamesExceedLength+=1;
 	    	  if(fileName.toLowerCase().contains("untitled"))
@@ -106,7 +109,13 @@ public class FileNames  {
 	      System.out.println("Number Of File Titles having 'COPY' String: "+copyFileNames);
 	      System.out.println("Mismatched Files: "+errorCount);
 	      System.out.println("Matched Files : "+(textFilesList.size()-errorCount));
+	      System.out.println("Total Markdown Files:"+textFilesList.size());
 	      
+	      //plotting
+	        final BoxAndWhisker demo = new BoxAndWhisker("File Names Lengths",fileLengths);
+	        demo.pack();
+	        RefineryUtilities.centerFrameOnScreen(demo);
+	        demo.setVisible(true);
 
 		
 	}
