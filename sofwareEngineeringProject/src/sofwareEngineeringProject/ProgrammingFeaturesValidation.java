@@ -53,20 +53,29 @@ public class ProgrammingFeaturesValidation {
 	private String markdownInput;
 	private String htmlOutput;
 	private static HashMap<String, Integer> exceptionList = new HashMap<String, Integer>();
+	private static ArrayList<String> exceptionNameList=new ArrayList<String>();
 
-	private static String readFileAsString(String filePath) throws IOException {
-		StringBuffer fileData = new StringBuffer();
-		BufferedReader reader = new BufferedReader(new FileReader(filePath));
-		char[] buf = new char[1024];
-		int numRead = 0;
-		while ((numRead = reader.read(buf)) != -1) {
-			String readData = String.valueOf(buf, 0, numRead);
-			fileData.append(readData);
+	private static String readFileAsString(String filePath) {
+		try {
+			StringBuffer fileData = new StringBuffer();
+			BufferedReader reader = new BufferedReader(new FileReader(filePath));
+			char[] buf = new char[1024];
+			int numRead = 0;
+			while ((numRead = reader.read(buf)) != -1) {
+				String readData = String.valueOf(buf, 0, numRead);
+				fileData.append(readData);
+			}
+			reader.close();
+			return fileData.toString();
+		}catch(IOException e) {
+			exceptionList.put("IOException",0);
+			exceptionNameList.add("IOException");
+			System.out.println(e);
+			return null;
 		}
-		reader.close();
-		return fileData.toString();
+		
+		
 	}
-
 	@Parameters(name = "{0}")
 	public static Collection<String[]> getTestParameters() {
 		ArrayList<String[]> inoutPairs = new ArrayList<String[]>();
@@ -88,42 +97,50 @@ public class ProgrammingFeaturesValidation {
 		return inoutPairs;
 	}
 
-	private static void addTestsFrom(File templateDir, ArrayList<String[]> inoutPairs) throws Exception {
-		File[] files = templateDir.listFiles();
-		for (int f = 0; f < files.length; f++) {
-			if (files[f].isDirectory() && !files[f].getName().endsWith(".disabled")) {
-				addTestsFrom(files[f], inoutPairs);
-			} else if (files[f].getName().endsWith(MD_EXT) || files[f].getName().endsWith(".text")
-					|| files[f].getName().endsWith(RMD_EXT)) {
-				String filename = files[f].getName();
-				/*
-				 * Used to test only a smaller subset of tests. if
-				 * (!filename.contains("blockq")) continue;
-				 */
-				String path = files[f].getAbsolutePath();
-				String dir = path.substring(0, path.lastIndexOf("\\"));
-				String ext = filename.substring(filename.lastIndexOf("."));
-				// Try .html .
-				String htmlFilename = dir + "/" + filename.substring(0, filename.length() - ext.length()) + HTML_EXT;
-				File htmlFile = new File(htmlFilename);
-				if (!htmlFile.isFile()) {
-					// Try .out .
-					htmlFilename = dir + "/" + filename.substring(0, filename.length() - ext.length()) + ".out";
-					htmlFile = new File(htmlFilename);
+private static void addTestsFrom(File templateDir, ArrayList<String[]> inoutPairs) {
+		
+		try {
+			File[] files = templateDir.listFiles();
+			for (int f = 0; f < files.length; f++) {
+				if (files[f].isDirectory() && !files[f].getName().endsWith(".disabled")) {
+					addTestsFrom(files[f], inoutPairs);
+				} else if (files[f].getName().endsWith(MD_EXT) || files[f].getName().endsWith(".text")
+						|| files[f].getName().endsWith(RMD_EXT)) {
+					String filename = files[f].getName();
+					String path = files[f].getAbsolutePath();
+					String dir = path.substring(0, path.lastIndexOf("\\"));
+					String ext = filename.substring(filename.lastIndexOf("."));
+					// Try .html .
+					String htmlFilename = dir + "/" + filename.substring(0, filename.length() - ext.length()) + HTML_EXT;
+					File htmlFile = new File(htmlFilename);
 					if (!htmlFile.isFile()) {
-						System.err.println(htmlFilename + " not found.");
-						continue;
+						exceptionList.put("FileNotFoundException",1);
+						// Try .out .
+						htmlFilename = dir + "/" + filename.substring(0, filename.length() - ext.length()) + ".out";
+						htmlFile = new File(htmlFilename);
+						if (!htmlFile.isFile()) {
+							exceptionList.put("FileNotFoundException",0);
+							exceptionNameList.add("FileNotFoundException");
+							System.err.println(htmlFilename + " not found.");
+							continue;
+						}
 					}
+					String[] test = new String[3];
+					test[0] = files[f].getName();
+					// DOC: see note in Lexer setex heading about why we need this.
+					test[1] = readFileAsString(files[f].getAbsolutePath()) + "\n";
+					test[2] = readFileAsString(htmlFile.getAbsolutePath());
+					inoutPairs.add(test);
 				}
-				String[] test = new String[3];
-				test[0] = files[f].getName();
-				// DOC: see note in Lexer setex heading about why we need this.
-				test[1] = readFileAsString(files[f].getAbsolutePath()) + "\n";
-				test[2] = readFileAsString(htmlFile.getAbsolutePath());
-				inoutPairs.add(test);
 			}
+			
+		} catch (Exception e) {
+			exceptionList.put("Exception",0);
+			exceptionNameList.add("Exception");
 		}
+		
 	}
+
 
 	public ProgrammingFeaturesValidation(String filename, String input, String output) {
 		this.filename = filename;
@@ -142,8 +159,18 @@ public class ProgrammingFeaturesValidation {
 			SyntaxErrorListener listener = new SyntaxErrorListener();
 
 			ParseTree tree = parser.document();
-			parser.addErrorListener(listener);
-			// System.out.println(listener.getSyntaxErrors());
+			parser.addErrorListener(new BaseErrorListener() {
+				@Override
+				public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line,
+						int charPositionInLine, String msg, RecognitionException e) {
+					
+					exceptionList.put("IllegalStateException",0);
+					exceptionNameList.add("IllegalStateException");
+					throw new IllegalStateException("failed to parse at line " + line + " due to " + msg, e);
+
+				}
+			});
+			//System.out.println("own Syntax:"+listener.getSyntaxErrors());
 			// System.out.println("my
 			// own:"+parser.getErrorListenerDispatch().getClass().getName());
 			// System.out.println(errorCount);
@@ -160,16 +187,9 @@ public class ProgrammingFeaturesValidation {
 			//walker.walk(translator, tree);
 			if (translator.isWithReferences()) {
 				translator.clearHtml();
-				walker.walk(translator, tree);
+				//walker.walk(translator, tree);
 			}
-			parser.addErrorListener(new BaseErrorListener() {
-				@Override
-				public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line,
-						int charPositionInLine, String msg, RecognitionException e) {
-					throw new IllegalStateException("failed to parse at line " + line + " due to " + msg, e);
-
-				}
-			});
+			
 			assertEquals(htmlOutput, translator.getHtml());
 //		TestResult result=new TestResult();
 //		Test(result);
@@ -180,11 +200,6 @@ public class ProgrammingFeaturesValidation {
 		}
 	}
 
-	public static void Test(TestResult result) {
-		int e = result.errorCount();
-		int f = result.failureCount();
-		System.out.println(e + "Syntax_errors:" + syntaxErrorCount);
-	}
 
 	@AfterClass
 	public static void printFailedTestsCount() {
@@ -201,7 +216,19 @@ public class ProgrammingFeaturesValidation {
 //			ObjectOutputStream oos = new ObjectOutputStream (new FileOutputStream("tests/Output.properties"));
 //	        oos.writeObject(exceptionList);
 //	        oos.close();
-			exceptionList.put("Syntax_errors",syntaxErrorCount);
+			for(String str: exceptionNameList) {
+				for(Entry<String, Integer> entry: exceptionList.entrySet())
+				{
+					if(entry.getKey().equalsIgnoreCase(str)) {
+						exceptionList.put(str,entry.getValue()+1);
+					}
+//					}else {
+//						exceptionList.put(str,entry.getValue()+1);
+//					}
+				}
+			}
+			
+			exceptionList.put("Middle",syntaxErrorCount);
 			File file = new File("tests/Output_PFV.properties");
 
 			BufferedWriter bf = null;
@@ -223,6 +250,7 @@ public class ProgrammingFeaturesValidation {
 			}
 			bf.flush();
 			bf.close();
+			
 		} catch (Exception e) {
 			System.out.println(e);
 		}

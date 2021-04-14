@@ -12,6 +12,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
+
 import java.util.Properties;
 import java.util.Set;
 
@@ -37,14 +41,14 @@ public class TestRunnerForPFV {
 			System.out.print(
 					"Successful: " + (result.getRunCount() - result.getFailureCount() - result.getIgnoreCount()));
 			System.out.print("  Ignored: " + result.getIgnoreCount());
-			System.out.println("  Failed: " + result.getFailureCount());
+			System.out.println("  End: " + result.getFailureCount());
 			System.out.println("Run Time: " + ((double) result.getRunTime() / 1000) + " seconds");
 
 			exceptionList.put("Total_Test_Cases", result.getRunCount());
-			exceptionList.put("Successful",
+			exceptionList.put("Beginning",
 					(result.getRunCount() - result.getFailureCount() - result.getIgnoreCount()));
 			exceptionList.put("Ignored", result.getIgnoreCount());
-			exceptionList.put("Failed", result.getFailureCount());
+			exceptionList.put("End", result.getFailureCount());
 			File f1 = new File("tests/Output_PFV.properties");
 			if (!f1.exists()) {
 				// f1.createNewFile();
@@ -115,10 +119,19 @@ public class TestRunnerForPFV {
 				System.out.println(entry.getKey() + " = " + entry.getValue());
 			}
 
-			BarChart chart = new BarChart("Programming Features Validation Results Chart", "Count", "Stats",exceptionList,count);
-			chart.pack();
-			RefineryUtilities.centerFrameOnScreen(chart);
-			chart.setVisible(true);
+//			BarChart chart = new BarChart("Programming Features Validation Results Chart", "Count", "Stats",exceptionList,count);
+//			chart.pack();
+//			RefineryUtilities.centerFrameOnScreen(chart);
+//			chart.setVisible(true);
+			final String count1=count;
+			SwingUtilities.invokeLater(() -> {  
+			      LineChart example = new LineChart("Programming Features Validation Results Chart",exceptionList,count1);  
+			      example.setAlwaysOnTop(true);  
+			      example.pack();  
+			      example.setSize(600, 400);  
+			      example.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);  
+			      example.setVisible(true);  
+			    });  
 
 		} catch (Exception e) {
 			System.out.println(e);
