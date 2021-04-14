@@ -12,5 +12,7 @@
 	<classpathentry kind="lib" path="E:/bhargavi/sofwareEngineeringProject/lib/antlr-4.9.1-complete.jar"/>
 	<classpathentry kind="lib" path="E:/Java_Stuff/jfreechart-1.0.1/lib/jcommon-1.0.0.jar"/>
 	<classpathentry kind="lib" path="E:/Java_Stuff/jfreechart-1.0.1/lib/jfreechart-1.0.1.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Java/jre1.8.0_92/lib/jfxswt.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Java/jre1.8.0_92/lib/ext/jfxrt.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

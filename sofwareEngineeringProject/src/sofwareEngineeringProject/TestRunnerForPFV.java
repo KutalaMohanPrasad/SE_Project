@@ -48,7 +48,7 @@ public class TestRunnerForPFV {
 			exceptionList.put("Beginning",
 					(result.getRunCount() - result.getFailureCount() - result.getIgnoreCount()));
 			exceptionList.put("Ignored", result.getIgnoreCount());
-			exceptionList.put("End", result.getFailureCount());
+			exceptionList.put("ZEnd", result.getFailureCount());
 			File f1 = new File("tests/Output_PFV.properties");
 			if (!f1.exists()) {
 				// f1.createNewFile();
@@ -110,8 +110,8 @@ public class TestRunnerForPFV {
 			while (itr.hasNext()) {
 				
 				Map.Entry entry = (Map.Entry) itr.next();
-				if(entry.getKey().toString().equalsIgnoreCase("Ignored") || entry.getKey().toString().equalsIgnoreCase("Failed") 
-						|| entry.getKey().toString().equalsIgnoreCase("Successful") || entry.getKey().toString().equalsIgnoreCase("Syntax_errors")
+				if(entry.getKey().toString().equalsIgnoreCase("Middle") || entry.getKey().toString().equalsIgnoreCase("Beginning") 
+						|| entry.getKey().toString().equalsIgnoreCase("ZEnd") 
 						)
 					exceptionList.put((String) entry.getKey(), Integer.parseInt(entry.getValue().toString()));
 				if(entry.getKey().toString().equalsIgnoreCase("Total_Test_Cases"))

@@ -230,7 +230,6 @@ private static void addTestsFrom(File templateDir, ArrayList<String[]> inoutPair
 			
 			exceptionList.put("Middle",syntaxErrorCount);
 			File file = new File("tests/Output_PFV.properties");
-
 			BufferedWriter bf = null;
 			
 
