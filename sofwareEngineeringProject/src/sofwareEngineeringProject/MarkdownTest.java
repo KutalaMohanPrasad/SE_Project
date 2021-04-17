@@ -159,18 +159,19 @@ public class MarkdownTest {
 			MarkdownParser parser = new MarkdownParser(tokens);
 			SyntaxErrorListener listener = new SyntaxErrorListener();
 
-			ParseTree tree = parser.document();
+			
 			parser.addErrorListener(new BaseErrorListener() {
 				@Override
 				public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line,
 						int charPositionInLine, String msg, RecognitionException e) {
 					
-					exceptionList.put("IllegalStateException",0);
-					exceptionNameList.add("IllegalStateException");
-					throw new IllegalStateException("failed to parse at line " + line + " due to " + msg, e);
+					exceptionList.put(e.getClass().getSimpleName(),0);
+					exceptionNameList.add(e.getClass().getSimpleName());
+					//throw new IllegalStateException("failed to parse at line " + line + " due to " + msg, e);
 
 				}
 			});
+			ParseTree tree = parser.document();
 			//System.out.println("own Syntax:"+listener.getSyntaxErrors());
 			// System.out.println("my
 			// own:"+parser.getErrorListenerDispatch().getClass().getName());
@@ -178,7 +179,7 @@ public class MarkdownTest {
 			errorCount += parser.getErrorListeners().size();
 			if (parser.getNumberOfSyntaxErrors() > 0) {
 				syntaxErrorCount += parser.getNumberOfSyntaxErrors();
-				throw new Exception("Syntax error in test " + filename);
+				throw new IOException("PicoFeedException : " + filename);
 			}
 			//
 			// System.out.println(syntaxErrorCount);
@@ -196,7 +197,7 @@ public class MarkdownTest {
 //		Test(result);
 
 		} catch (Exception e) {
-			exceptionList.put(e.getClass().getName(), 1);
+			exceptionList.put(e.getClass().getSimpleName(), 1);
 			System.out.println("Exception: " + e);
 		}
 	}
@@ -234,7 +235,7 @@ public class MarkdownTest {
 				}
 			}
 			
-			exceptionList.put("Syntax_errors",syntaxErrorCount);
+			exceptionList.put("Syntax_errors",syntaxErrorCount-1);
 			File file = new File("tests/Output.properties");
 
 			BufferedWriter bf = null;

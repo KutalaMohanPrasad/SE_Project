@@ -6,6 +6,8 @@ import java.util.Map;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.CategoryAxis;
+import org.jfree.chart.axis.CategoryLabelPositions;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
@@ -27,7 +29,11 @@ public class BarChart extends ApplicationFrame {
 		         
 		      ChartPanel chartPanel = new ChartPanel( barChart );        
 		      chartPanel.setPreferredSize(new java.awt.Dimension( 560 , 367 ) );        
+		      
+		      chartPanel.setVerticalAxisTrace(true);
 		      setContentPane( chartPanel );
+		      CategoryAxis axis = barChart.getCategoryPlot().getDomainAxis();
+		      axis.setCategoryLabelPositions(CategoryLabelPositions.UP_45);
 	}
 
 	private CategoryDataset createDataset(HashMap<String, Integer> exceptionList, String count) {
