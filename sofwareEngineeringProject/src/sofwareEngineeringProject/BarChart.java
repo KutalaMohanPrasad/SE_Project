@@ -8,11 +8,17 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.CategoryLabelPositions;
+import org.jfree.chart.labels.ItemLabelAnchor;
+import org.jfree.chart.labels.ItemLabelPosition;
+import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
+import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.renderer.category.CategoryItemRenderer;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.ui.ApplicationFrame;
-import org.jfree.ui.RefineryUtilities; 
+import org.jfree.ui.RefineryUtilities;
+import org.jfree.ui.TextAnchor; 
 
 public class BarChart extends ApplicationFrame {
 	
@@ -34,6 +40,14 @@ public class BarChart extends ApplicationFrame {
 		      setContentPane( chartPanel );
 		      CategoryAxis axis = barChart.getCategoryPlot().getDomainAxis();
 		      axis.setCategoryLabelPositions(CategoryLabelPositions.UP_45);
+		      
+		      CategoryItemRenderer renderer = ((CategoryPlot)barChart.getPlot()).getRenderer();
+
+		        renderer.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
+		        renderer.setBaseItemLabelsVisible(true);
+		        ItemLabelPosition position = new ItemLabelPosition(ItemLabelAnchor.OUTSIDE12, 
+		                TextAnchor.TOP_CENTER);
+		        renderer.setBasePositiveItemLabelPosition(position);
 	}
 
 	private CategoryDataset createDataset(HashMap<String, Integer> exceptionList, String count) {
