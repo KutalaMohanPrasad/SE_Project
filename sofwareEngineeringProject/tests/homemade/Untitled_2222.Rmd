@@ -1,0 +1,11 @@
+# A problem set
+
+    a) Generate a vector x consisting of 4 numbers
+    ```{r}
+    # Generate x here ...
+    ```
+    We can now calculate with x.
+    For example the following code multiplies each element by 3:
+    ```{r}
+    3*x
+    ```
